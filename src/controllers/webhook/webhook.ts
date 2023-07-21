@@ -5,6 +5,7 @@ import BotResponse from "../../models/bot.response";
 import { Configs } from "../../config/config";
 import axios from "axios";
 import { ResponseType } from "../../common/enum";
+import { Types } from "mongoose";
 
 const verify_token = Configs.VERIFY_TOKEN;
 const token = Configs.WHATSAPP_TOKEN;
@@ -47,12 +48,13 @@ async function webhook(req: Request, res: Response) {
           const response = await getBotResponseByType(ResponseType.Welcome);
 
           if (response) {
-            await createConversation(
+            const convers = await createConversation(
               user._id,
               msg_body,
               response._id,
               currentTime
             );
+            user.conversations.push(new Types.ObjectId(convers._id));
             responseMessage = response.message;
           }
         } else {
@@ -66,12 +68,13 @@ async function webhook(req: Request, res: Response) {
             );
 
             if (response) {
-              await createConversation(
+              const convers = await createConversation(
                 user._id,
                 msg_body,
                 response._id,
                 currentTime
               );
+              user.conversations.push(new Types.ObjectId(convers._id));
               responseMessage = response.message;
             }
           } else {
@@ -95,12 +98,13 @@ async function webhook(req: Request, res: Response) {
 
             if (response) {
               user.lastMessageTime = currentTime;
-              await createConversation(
+              const convers = await createConversation(
                 user._id,
                 msg_body,
                 response._id,
                 currentTime
               );
+              user.conversations.push(new Types.ObjectId(convers._id));
               responseMessage = response.message;
             }
           }
@@ -133,7 +137,7 @@ async function createConversation(
   nextResponseId: string,
   messageTime: Date
 ) {
-  await Conversation.create({
+  return await Conversation.create({
     user: userId,
     message,
     nextResponse: nextResponseId,
