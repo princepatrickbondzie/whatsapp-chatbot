@@ -35,6 +35,7 @@ async function webhook(req: Request, res: Response) {
             path: "nextResponse",
           },
         });
+        console.log("user:", user);
 
         if (!user) {
           user = await User.create({
@@ -77,6 +78,7 @@ async function webhook(req: Request, res: Response) {
             const lastConversation =
               user.conversations[user.conversations.length - 1];
             let response;
+            console.log("User exist and is within time");
 
             if (
               lastConversation.nextResponse.type === ResponseType.Welcome ||
