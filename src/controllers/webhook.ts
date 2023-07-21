@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User, { IUser } from "../models/User";
+import User, { IUser } from "../models/user";
 import Conversation from "../models/conversation";
 import BotResponse from "../models/bot.response";
 import { Configs } from "../config/config";
